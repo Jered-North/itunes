@@ -15,6 +15,7 @@ app.controller('mainCtrl', function($scope, itunesService){
         {field: 'AlbumArt', displayName: 'Album Art', width: '110px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><img src="{{row.getProperty(col.field)}}"></div>'},
         {field: 'Type', displayName: 'Type'},
         {field: 'CollectionPrice', displayName: 'Collection Price'},
+        {field: 'Genre', displayName: 'Genre'}
       ]
   };
 
@@ -22,19 +23,34 @@ app.controller('mainCtrl', function($scope, itunesService){
 
   //First inject itunesService into your controller.
 
-    //code here
+ 
 
 
   //Now write a function that will call the method on the itunesService that is responsible for getting the data from iTunes, whenever the user clicks the submit button
   //*remember, that method should be expecting an artist name. The artist name is coming from the input box on index.html, head over there and check if that input box is tied to any specific model we could use.
   //Also note that that method should be retuning a promise, so you could use .then in this function.
     
-    //Code here
+    $scope.getSongData = function() {
+      itunesService.getMusic($scope.artist).then(function(dataFromService) {
+        var myFinalArray = [];
+        for (var i = 0; i < dataFromService.length; i++) {
+          myFinalArray[i] = {
+                     Artist : dataFromService[i].artistName,
+                 Collection : dataFromService[i].collectionName,
+                   AlbumArt : dataFromService[i].artworkUrl100,
+                       Type : dataFromService[i].kind,
+            CollectionPrice : dataFromService[i].collectionPrice,
+                      Genre : dataFromService[i].primaryGenreName,
+          }
+        }
+        // console.log(myFinalArray);
+        $scope.songData = myFinalArray;
+      });
+    }
 
 
   //Check that the above method is working by entering a name into the input field on your web app, and then console.log the result
 
-    //Code here
 
 
   //If everything worked you should see a huge array of objects inside your console. That's great! But unfortunately that's not what ng-grid is expecting. What you need to do now
@@ -56,7 +72,3 @@ app.controller('mainCtrl', function($scope, itunesService){
 
     //Code here
 });
-
-
-
-
